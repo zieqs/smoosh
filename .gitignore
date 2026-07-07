@@ -1,0 +1,19 @@
+# Xcode
+DerivedData/
+*.xcworkspace/xcuserdata/
+*.xcodeproj/xcuserdata/
+*.xcodeproj/project.xcworkspace/xcuserdata/
+.build/
+
+# macOS
+.DS_Store
+
+# Swift Package Manager
+.packages
+Package.resolved
+
+# General
+*.lock
+*.log
+*.swp
+*.swo
