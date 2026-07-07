@@ -7,16 +7,33 @@ struct HistoryListView: View {
         if appState.history.isEmpty {
             emptyState
         } else {
-            List {
-                ForEach(appState.history) { item in
-                    HistoryRow(item: item)
+            VStack(spacing: 0) {
+                HStack {
+                    Text("History")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    Spacer()
+                    Button("Clear") {
+                        appState.clearHistory()
+                    }
+                    .buttonStyle(.plain)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
                 }
-                .onDelete { offsets in
-                    appState.removeItems(at: offsets)
+                .padding(.horizontal)
+                .padding(.top, 8)
+
+                List {
+                    ForEach(appState.history) { item in
+                        HistoryRow(item: item)
+                    }
+                    .onDelete { offsets in
+                        appState.removeItems(at: offsets)
+                    }
                 }
+                .listStyle(.plain)
+                .frame(minHeight: 100)
             }
-            .listStyle(.plain)
-            .frame(minHeight: 100)
         }
     }
 
