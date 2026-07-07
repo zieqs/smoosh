@@ -10,7 +10,7 @@ struct smooshApp: App {
                 .environment(appState)
                 .frame(width: 300)
         } label: {
-            Image(systemName: "arrow.up.arrow.down.circle")
+            Image(systemName: "arrow.up.arrow.down.circle.fill")
         }
     }
 }
