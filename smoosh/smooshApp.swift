@@ -1,17 +1,16 @@
-//
-//  smooshApp.swift
-//  smoosh
-//
-//  Created by zieqs on 08/07/2026.
-//
-
 import SwiftUI
 
 @main
 struct smooshApp: App {
+    @State private var appState = AppState()
+
     var body: some Scene {
-        WindowGroup {
+        MenuBarExtra {
             ContentView()
+                .environment(appState)
+                .frame(width: 300)
+        } label: {
+            Image(systemName: "arrow.up.arrow.down.circle")
         }
     }
 }
