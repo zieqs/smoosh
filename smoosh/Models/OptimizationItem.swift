@@ -22,6 +22,6 @@ struct OptimizationItem: Identifiable {
 
     var formattedSavings: String? {
         guard let pct = savingsPercent else { return nil }
-        return String(format: "-%.0f%%", pct)
+        return String(format: "%.0f%%", pct)
     }
 }

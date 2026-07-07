@@ -33,9 +33,8 @@ struct DropZoneView: View {
 
     private func handleDrop(_ providers: [NSItemProvider]) {
         for provider in providers {
-            provider.loadItem(forTypeIdentifier: UTType.fileURL.identifier, options: nil) { item, _ in
-                guard let data = item as? Data,
-                      let url = URL(dataRepresentation: data, relativeTo: nil)
+            provider.loadObject(ofClass: NSURL.self) { item, _ in
+                guard let url = item as? URL ?? (item as? NSURL) as? URL
                 else { return }
 
                 let resourceValues = try? url.resourceValues(forKeys: [.fileSizeKey])
