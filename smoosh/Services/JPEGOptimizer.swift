@@ -16,69 +16,47 @@ struct JPEGOptimizer: MediaOptimizerProtocol {
                     return
                 }
 
-                do {
-                    let tempDir = FileManager.default.temporaryDirectory
-                        .appendingPathComponent(UUID().uuidString)
-                    try FileManager.default.createDirectory(at: tempDir, withIntermediateDirectories: true)
-                    let ppmPath = tempDir.appendingPathComponent("decoded.ppm")
-                    FileManager.default.createFile(atPath: ppmPath.path, contents: nil)
-                    let ppmHandle = try FileHandle(forWritingTo: ppmPath)
+                let shell = Process()
+                shell.executableURL = URL(fileURLWithPath: "/bin/zsh")
+                let script = "\"\(djpeg.path)\" \"\(inputURL.path)\" 2>/dev/null | \"\(cjpeg.path)\" -quality 85 -optimize -progressive > \"\(outputURL.path)\""
+                shell.arguments = ["-c", script]
 
-                    let decodeResult: (exitCode: Int32, stderr: String) = try await withCheckedThrowingContinuation { continuation in
-                        let proc = Process()
-                        proc.executableURL = djpeg
-                        proc.arguments = [inputURL.path]
-                        proc.standardOutput = ppmHandle
+                var env = ProcessInfo.processInfo.environment
+                let libPaths = ["/opt/homebrew/lib", Bundle.main.resourcePath].compactMap { $0 }.joined(separator: ":")
+                env["DYLD_FALLBACK_LIBRARY_PATH"] = libPaths
+                shell.environment = env
 
-                        let stderrPipe = Pipe()
-                        proc.standardError = stderrPipe
+                let stderrPipe = Pipe()
+                shell.standardError = stderrPipe
 
-                        proc.terminationHandler = { p in
-                            try? ppmHandle.close()
-                            let stderr = (try? stderrPipe.fileHandleForReading.readToEnd()).flatMap {
-                                String(data: $0, encoding: .utf8)
-                            } ?? ""
-                            continuation.resume(returning: (p.terminationStatus, stderr))
-                        }
-                        do {
-                            try proc.run()
-                        } catch {
-                            continuation.resume(throwing: error)
-                        }
+                let result: (exitCode: Int32, stderr: String) = try await withCheckedThrowingContinuation { continuation in
+                    shell.terminationHandler = { p in
+                        let stderr = (try? stderrPipe.fileHandleForReading.readToEnd()).flatMap {
+                            String(data: $0, encoding: .utf8)
+                        } ?? ""
+                        continuation.resume(returning: (p.terminationStatus, stderr))
                     }
-
-                    guard decodeResult.exitCode == 0 else {
-                        try? FileManager.default.removeItem(at: tempDir)
-                        continuation.yield(.failed(OptimizationError.processFailed(
-                            exitCode: decodeResult.exitCode, stderr: decodeResult.stderr
-                        )))
-                        continuation.finish()
-                        return
+                    do {
+                        try shell.run()
+                    } catch {
+                        continuation.resume(throwing: error)
                     }
+                }
 
-                    let encodeResult = try await ProcessRunner.run(
-                        executableURL: cjpeg,
-                        arguments: ["-quality", "85", "-optimize", "-progressive", ppmPath.path]
-                    )
+                let originalSize = (try? FileManager.default.attributesOfItem(atPath: inputURL.path))?[.size] as? Int64 ?? 0
+                let optimizedSize = (try? FileManager.default.attributesOfItem(atPath: outputURL.path))?[.size] as? Int64 ?? 0
 
-                    try? FileManager.default.removeItem(at: tempDir)
-
-                    if encodeResult.exitCode == 0 {
-                        try encodeResult.stdoutData.write(to: outputURL)
-                        let originalSize = (try? FileManager.default.attributesOfItem(atPath: inputURL.path))?[.size] as? Int64 ?? 0
-                        let optimizedSize = (try? FileManager.default.attributesOfItem(atPath: outputURL.path))?[.size] as? Int64 ?? 0
-                        continuation.yield(.completed(metrics: OptimizationMetrics(
-                            originalSize: originalSize,
-                            optimizedSize: optimizedSize,
-                            outputURL: outputURL
-                        )))
-                    } else {
-                        continuation.yield(.failed(OptimizationError.processFailed(
-                            exitCode: encodeResult.exitCode, stderr: encodeResult.stderr
-                        )))
-                    }
-                } catch {
-                    continuation.yield(.failed(OptimizationError.ioError(error)))
+                if result.exitCode == 0, optimizedSize > 0 {
+                    continuation.yield(.completed(metrics: OptimizationMetrics(
+                        originalSize: originalSize,
+                        optimizedSize: optimizedSize,
+                        outputURL: outputURL
+                    )))
+                } else {
+                    try? FileManager.default.removeItem(at: outputURL)
+                    continuation.yield(.failed(OptimizationError.processFailed(
+                        exitCode: result.exitCode, stderr: result.stderr
+                    )))
                 }
                 continuation.finish()
             }
