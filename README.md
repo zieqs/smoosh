@@ -89,9 +89,6 @@ smoosh/
   resources/
     release-binaries/          # Pre-linked binaries for Release builds
     release-dylibs/            # Bundled dylibs for Release builds
-  docs/
-    CONTEXT.md                 # Project specification
-    AGENTS.md                  # Agent instructions
 ```
 
 - **`MediaOptimizerProtocol`** — Each format implements this, returning an `AsyncStream<OptimizationState>` for progress
@@ -115,5 +112,5 @@ Smoosh is free software licensed under the **GNU General Public License v2**.
 ## Support
 
 If you find Smoosh useful, consider supporting development:
-- [GitHub Sponsors](https://github.com/sponsors/zieqs)
 - [Ko-fi](https://ko-fi.com/zieqs)
+- [Buy Me a Coffee](https://buymeacoffee.com/zieqs)
