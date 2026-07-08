@@ -63,9 +63,11 @@ struct DropZoneView: View {
 
                 Task { @MainActor in
                     appState.addItem(OptimizationItem(
+                        id: UUID(),
                         fileName: url.lastPathComponent,
                         fileSize: size,
                         optimizedSize: nil,
+                        sourceURL: url,
                         status: .pending
                     ))
                 }

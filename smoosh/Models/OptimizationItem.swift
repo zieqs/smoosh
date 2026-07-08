@@ -1,15 +1,16 @@
 import Foundation
 
 struct OptimizationItem: Identifiable {
-    let id = UUID()
+    let id: UUID
     let fileName: String
     let fileSize: Int64
     let optimizedSize: Int64?
+    let sourceURL: URL?
     let status: Status
 
     enum Status {
         case pending
-        case processing
+        case processing(Double)
         case completed
         case failed(String)
     }
