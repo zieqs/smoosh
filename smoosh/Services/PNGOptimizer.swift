@@ -9,18 +9,16 @@ struct PNGOptimizer: MediaOptimizerProtocol {
             continuation.yield(.processing(progress: 0))
 
             Task {
-                guard let binary = BinaryLocator.url(for: "oxipng") else {
-                    continuation.yield(.failed(OptimizationError.binaryNotFound("oxipng")))
+                guard let binary = BinaryLocator.url(for: "pngquant") else {
+                    continuation.yield(.failed(OptimizationError.binaryNotFound("pngquant")))
                     continuation.finish()
                     return
                 }
 
                 do {
-                    try FileManager.default.copyItem(at: inputURL, to: outputURL)
-
                     let result = try await ProcessRunner.run(
                         executableURL: binary,
-                        arguments: ["-o", "4", "--strip", "all", "--alpha", outputURL.path]
+                        arguments: ["--quality=65-80", "--speed", "1", "--output", outputURL.path, inputURL.path]
                     )
 
                     if result.exitCode == 0 {

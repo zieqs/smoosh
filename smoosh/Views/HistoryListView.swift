@@ -105,7 +105,7 @@ private struct HistoryRow: View {
             Badge(text: item.formattedSavings ?? "Done", color: .green)
         case .failed(let message):
             HStack(spacing: 4) {
-                Badge(text: "Failed", color: .red)
+                Badge(text: message, color: .red)
                 Button("Retry") {
                     onRetry(item)
                 }
