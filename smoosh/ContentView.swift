@@ -20,5 +20,6 @@ struct ContentView: View {
             BottomButtonsView()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(WindowAccessor())
     }
 }

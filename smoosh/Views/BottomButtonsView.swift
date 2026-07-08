@@ -4,7 +4,20 @@ struct BottomButtonsView: View {
     var body: some View {
         VStack(spacing: 0) {
             Button {
-                if let url = URL(string: "https://ko-fi.com/zieqs") {
+                //Open Preference View Here
+            } label: {
+                Label("Preferences ", systemImage: "gear")
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 4)
+            }
+            .buttonStyle(.bordered)
+            .controlSize(.small)
+            
+            Divider()
+                .frame(height: 20)
+            
+            Button {
+                if let url = URL(string: "https://buymeacoffee.com/zieqs") { //"https://ko-fi.com/zieqs"
                     NSWorkspace.shared.open(url)
                 }
             } label: {
