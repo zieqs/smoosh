@@ -14,21 +14,25 @@ struct ProcessRunner {
         process.standardOutput = stdoutPipe
         process.standardError = stderrPipe
 
-        return try await withCheckedThrowingContinuation { continuation in
-            process.terminationHandler = { proc in
-                let stdout = (try? stdoutPipe.fileHandleForReading.readToEnd()).flatMap {
-                    String(data: $0, encoding: .utf8)
-                } ?? ""
-                let stderr = (try? stderrPipe.fileHandleForReading.readToEnd()).flatMap {
-                    String(data: $0, encoding: .utf8)
-                } ?? ""
-                continuation.resume(returning: (proc.terminationStatus, stdout, stderr))
+        return try await withTaskCancellationHandler {
+            try await withCheckedThrowingContinuation { continuation in
+                process.terminationHandler = { proc in
+                    let stdout = (try? stdoutPipe.fileHandleForReading.readToEnd()).flatMap {
+                        String(data: $0, encoding: .utf8)
+                    } ?? ""
+                    let stderr = (try? stderrPipe.fileHandleForReading.readToEnd()).flatMap {
+                        String(data: $0, encoding: .utf8)
+                    } ?? ""
+                    continuation.resume(returning: (proc.terminationStatus, stdout, stderr))
+                }
+                do {
+                    try process.run()
+                } catch {
+                    continuation.resume(throwing: error)
+                }
             }
-            do {
-                try process.run()
-            } catch {
-                continuation.resume(throwing: error)
-            }
+        } onCancel: {
+            process.terminate()
         }
     }
 }

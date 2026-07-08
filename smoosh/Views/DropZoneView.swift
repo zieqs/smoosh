@@ -53,7 +53,9 @@ struct DropZoneView: View {
         for provider in providers {
             provider.loadObject(ofClass: NSURL.self) { item, _ in
                 guard let url = item as? URL ?? (item as? NSURL) as? URL else { return }
-                self.processURL(url)
+                Task { @MainActor in
+                    self.processURL(url)
+                }
             }
         }
     }
@@ -61,12 +63,14 @@ struct DropZoneView: View {
     private func processURL(_ url: URL) {
         var isDirectory: ObjCBool = false
         guard FileManager.default.fileExists(atPath: url.path, isDirectory: &isDirectory) else { return }
-        let isDir = isDirectory.boolValue
 
-        if isDir {
+        if isDirectory.boolValue {
+            let supportedTypes: [UTType] = [.png, .jpeg, .gif]
             let enumerator = FileManager.default.enumerator(at: url, includingPropertiesForKeys: nil)
             while let child = enumerator?.nextObject() as? URL {
                 guard !child.hasDirectoryPath else { continue }
+                guard let type = UTType(filenameExtension: child.pathExtension),
+                      supportedTypes.contains(type) else { continue }
                 ImageOptimizationService.shared.optimize(fileAt: child, appState: appState)
             }
         } else {
