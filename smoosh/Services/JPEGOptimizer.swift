@@ -17,24 +17,44 @@ struct JPEGOptimizer: MediaOptimizerProtocol {
                 }
 
                 do {
-                    let decodeResult = try await ProcessRunner.run(
-                        executableURL: djpeg,
-                        arguments: [inputURL.path]
-                    )
+                    let tempDir = FileManager.default.temporaryDirectory
+                        .appendingPathComponent(UUID().uuidString)
+                    try FileManager.default.createDirectory(at: tempDir, withIntermediateDirectories: true)
+                    let ppmPath = tempDir.appendingPathComponent("decoded.ppm")
+                    FileManager.default.createFile(atPath: ppmPath.path, contents: nil)
+                    let ppmHandle = try FileHandle(forWritingTo: ppmPath)
+
+                    let decodeResult: (exitCode: Int32, stderr: String) = try await withCheckedThrowingContinuation { continuation in
+                        let proc = Process()
+                        proc.executableURL = djpeg
+                        proc.arguments = [inputURL.path]
+                        proc.standardOutput = ppmHandle
+
+                        let stderrPipe = Pipe()
+                        proc.standardError = stderrPipe
+
+                        proc.terminationHandler = { p in
+                            try? ppmHandle.close()
+                            let stderr = (try? stderrPipe.fileHandleForReading.readToEnd()).flatMap {
+                                String(data: $0, encoding: .utf8)
+                            } ?? ""
+                            continuation.resume(returning: (p.terminationStatus, stderr))
+                        }
+                        do {
+                            try proc.run()
+                        } catch {
+                            continuation.resume(throwing: error)
+                        }
+                    }
 
                     guard decodeResult.exitCode == 0 else {
+                        try? FileManager.default.removeItem(at: tempDir)
                         continuation.yield(.failed(OptimizationError.processFailed(
                             exitCode: decodeResult.exitCode, stderr: decodeResult.stderr
                         )))
                         continuation.finish()
                         return
                     }
-
-                    let tempDir = FileManager.default.temporaryDirectory
-                        .appendingPathComponent(UUID().uuidString)
-                    try FileManager.default.createDirectory(at: tempDir, withIntermediateDirectories: true)
-                    let ppmPath = tempDir.appendingPathComponent("decoded.ppm")
-                    try decodeResult.stdoutData.write(to: ppmPath)
 
                     let encodeResult = try await ProcessRunner.run(
                         executableURL: cjpeg,
