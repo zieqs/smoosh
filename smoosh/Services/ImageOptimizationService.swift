@@ -46,7 +46,8 @@ final class ImageOptimizationService {
                         sourceURL: url, status: .processing(progress)
                     ))
                 case .completed(let metrics):
-                    if metrics.optimizedSize < item.fileSize {
+                    let isSmaller = metrics.optimizedSize < item.fileSize
+                    if isSmaller {
                         try? FileManager.default.moveItem(at: tempOutput, to: outputURL)
                     } else {
                         try? FileManager.default.removeItem(at: tempOutput)
@@ -54,7 +55,7 @@ final class ImageOptimizationService {
                     appState.replaceItem(item.id, with: OptimizationItem(
                         id: item.id, fileName: url.lastPathComponent,
                         fileSize: item.fileSize,
-                        optimizedSize: metrics.optimizedSize,
+                        optimizedSize: isSmaller ? metrics.optimizedSize : item.fileSize,
                         sourceURL: url, status: .completed
                     ))
                 case .failed(let error):
