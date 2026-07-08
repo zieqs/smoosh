@@ -19,6 +19,14 @@ struct ContentView: View {
 
             BottomButtonsView()
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .frame(width: 300)
+        .frame(minHeight: 280)
+        .background(.thinMaterial)
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .shadow(color: .black.opacity(0.2), radius: 16, y: 6)
+        .overlay(
+            RoundedRectangle(cornerRadius: 12)
+                .stroke(.white.opacity(0.15), lineWidth: 1)
+        )
     }
 }

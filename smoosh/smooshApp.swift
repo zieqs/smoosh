@@ -2,14 +2,11 @@ import SwiftUI
 
 @main
 struct smooshApp: App {
-    @State private var appState = AppState()
+    @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     var body: some Scene {
-        MenuBarExtra ("Smoosh", systemImage: "rectangle.compress.vertical") {
-            ContentView()
-                .environment(appState)
-                .frame(width: 300)
+        Settings {
+            EmptyView()
         }
-        .menuBarExtraStyle(.window)
     }
 }

@@ -32,7 +32,7 @@ struct HistoryListView: View {
                     }
                 }
                 .listStyle(.plain)
-                .frame(minHeight: 100)
+                .frame(minHeight: 60, maxHeight: .infinity)
             }
         }
     }
