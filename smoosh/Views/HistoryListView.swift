@@ -25,7 +25,11 @@ struct HistoryListView: View {
 
                 List {
                     ForEach(appState.history) { item in
-                        HistoryRow(item: item)
+                        HistoryRow(item: item, onRetry: { item in
+                            if let url = item.sourceURL {
+                                ImageOptimizationService.shared.optimize(fileAt: url, appState: appState)
+                            }
+                        })
                     }
                     .onDelete { offsets in
                         appState.removeItems(at: offsets)
@@ -53,6 +57,7 @@ struct HistoryListView: View {
 
 private struct HistoryRow: View {
     let item: OptimizationItem
+    let onRetry: (OptimizationItem) -> Void
 
     var body: some View {
         HStack {
@@ -84,16 +89,30 @@ private struct HistoryRow: View {
         return original
     }
 
+    @ViewBuilder
     private var statusBadge: some View {
         switch item.status {
         case .pending:
-            return Badge(text: "Pending", color: .orange)
+            Badge(text: "Pending", color: .orange)
         case .processing:
-            return Badge(text: "Processing...", color: .blue)
+            HStack(spacing: 4) {
+                ProgressView()
+                    .scaleEffect(0.5)
+                    .frame(width: 10, height: 10)
+                Badge(text: "Processing...", color: .blue)
+            }
         case .completed:
-            return Badge(text: item.formattedSavings ?? "Done", color: .green)
-        case .failed:
-            return Badge(text: "Failed", color: .red)
+            Badge(text: item.formattedSavings ?? "Done", color: .green)
+        case .failed(let message):
+            HStack(spacing: 4) {
+                Badge(text: "Failed", color: .red)
+                Button("Retry") {
+                    onRetry(item)
+                }
+                .buttonStyle(.plain)
+                .font(.caption2)
+                .foregroundStyle(.blue)
+            }
         }
     }
 }

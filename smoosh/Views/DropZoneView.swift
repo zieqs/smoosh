@@ -36,11 +36,7 @@ struct DropZoneView: View {
             RoundedRectangle(cornerRadius: 12)
                 .stroke(
                     isDragging ? Color.accentColor : Color.secondary.opacity(0.25),
-                    style: StrokeStyle(
-                        lineWidth: 2,
-                        lineCap: .round,
-                        dash: [8, 5]
-                    )
+                    style: StrokeStyle(lineWidth: 2, lineCap: .round, dash: [8, 5])
                 )
         }
         .scaleEffect(isDragging ? 1.02 : 1.0)
@@ -57,21 +53,24 @@ struct DropZoneView: View {
         for provider in providers {
             provider.loadObject(ofClass: NSURL.self) { item, _ in
                 guard let url = item as? URL ?? (item as? NSURL) as? URL else { return }
-                
-                let resourceValues = try? url.resourceValues(forKeys: [.fileSizeKey])
-                let size = Int64(resourceValues?.fileSize ?? 0)
-
-                Task { @MainActor in
-                    appState.addItem(OptimizationItem(
-                        id: UUID(),
-                        fileName: url.lastPathComponent,
-                        fileSize: size,
-                        optimizedSize: nil,
-                        sourceURL: url,
-                        status: .pending
-                    ))
-                }
+                self.processURL(url)
             }
+        }
+    }
+
+    private func processURL(_ url: URL) {
+        var isDirectory: ObjCBool = false
+        guard FileManager.default.fileExists(atPath: url.path, isDirectory: &isDirectory) else { return }
+        let isDir = isDirectory.boolValue
+
+        if isDir {
+            let enumerator = FileManager.default.enumerator(at: url, includingPropertiesForKeys: nil)
+            while let child = enumerator?.nextObject() as? URL {
+                guard !child.hasDirectoryPath else { continue }
+                ImageOptimizationService.shared.optimize(fileAt: child, appState: appState)
+            }
+        } else {
+            ImageOptimizationService.shared.optimize(fileAt: url, appState: appState)
         }
     }
 }
