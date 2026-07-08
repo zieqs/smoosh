@@ -94,12 +94,12 @@ private struct HistoryRow: View {
         switch item.status {
         case .pending:
             Badge(text: "Pending", color: .orange)
-        case .processing:
+        case .processing(let progress):
             HStack(spacing: 4) {
                 ProgressView()
                     .scaleEffect(0.5)
                     .frame(width: 10, height: 10)
-                Badge(text: "Processing...", color: .blue)
+                Badge(text: progress > 0 ? "\(Int(progress * 100))%" : "Processing...", color: .blue)
             }
         case .completed:
             Badge(text: item.formattedSavings ?? "Done", color: .green)
