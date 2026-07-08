@@ -16,7 +16,7 @@ struct PNGOptimizer: MediaOptimizerProtocol {
                 }
 
                 do {
-                    try? FileManager.default.copyItem(at: inputURL, to: outputURL)
+                    try FileManager.default.copyItem(at: inputURL, to: outputURL)
 
                     let result = try await ProcessRunner.run(
                         executableURL: binary,
