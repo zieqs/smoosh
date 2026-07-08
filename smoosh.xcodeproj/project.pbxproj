@@ -121,18 +121,6 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
-
-
-/* Begin PBXSourcesBuildPhase section */
-		21D593A32FFD5B74006352F5 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXSourcesBuildPhase section */
-
 /* Begin PBXShellScriptBuildPhase section */
 		EA4559FDBB1E45F29F98BD558615DD46 /* Copy Release Dylibs */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -163,6 +151,16 @@
 			shellScript = "if [ \"${CONFIGURATION}\" = \"Release\" ]; then\n  cp -f \"${SRCROOT}/resources/release-dylibs/\"*.dylib \"${BUILT_PRODUCTS_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\"/\n  cp -f \"${SRCROOT}/resources/release-binaries/\"* \"${BUILT_PRODUCTS_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\"/\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		21D593A32FFD5B74006352F5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
 		21D593B02FFD5B75006352F5 /* Debug */ = {
