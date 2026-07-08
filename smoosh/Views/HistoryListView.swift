@@ -105,7 +105,7 @@ private struct HistoryRow: View {
             Badge(text: item.formattedSavings ?? "Done", color: .green)
         case .failed(let message):
             HStack(spacing: 4) {
-                Badge(text: message, color: .red)
+                Badge(text: shortError(message), color: .red)
                 Button("Retry") {
                     onRetry(item)
                 }
@@ -114,6 +114,13 @@ private struct HistoryRow: View {
                 .foregroundStyle(.blue)
             }
         }
+    }
+
+    private func shortError(_ message: String) -> String {
+        if message.hasPrefix("Process exited") { return "Failed" }
+        if message.hasPrefix("The operation couldn") { return "Error" }
+        if message == "" { return "Failed" }
+        return message
     }
 }
 

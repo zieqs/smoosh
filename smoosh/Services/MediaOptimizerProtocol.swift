@@ -22,9 +22,11 @@ enum OptimizationError: LocalizedError {
 
     var errorDescription: String? {
         switch self {
-        case .binaryNotFound(let name): return "\(name) not found"
-        case .unsupportedFormat(let ext): return "\(ext) is not a supported format"
-        case .processFailed(let code, let stderr): return "Process exited (\(code)): \(stderr)"
+        case .binaryNotFound(let name): return "\(name) not installed"
+        case .unsupportedFormat(let ext): return "\(ext) not supported"
+        case .processFailed(let code, _):
+            if code > 128 { return "Out of memory" }
+            return "Optimization failed"
         case .ioError(let error): return error.localizedDescription
         }
     }

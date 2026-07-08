@@ -61,6 +61,7 @@
 				21D593A32FFD5B74006352F5 /* Sources */,
 				21D593A42FFD5B74006352F5 /* Frameworks */,
 				21D593A52FFD5B74006352F5 /* Resources */,
+				EA4559FDBB1E45F29F98BD558615DD46 /* Copy Release Dylibs */,
 			);
 			buildRules = (
 			);
@@ -68,7 +69,6 @@
 			);
 			fileSystemSynchronizedGroups = (
 				21D593A92FFD5B74006352F5 /* smoosh */,
-				21D593BA2FFD5BD8006352F5 /* docs */,
 			);
 			name = smoosh;
 			packageProductDependencies = (
@@ -132,6 +132,37 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		EA4559FDBB1E45F29F98BD558615DD46 /* Copy Release Dylibs */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/resources/release-dylibs/libjpeg.8.dylib",
+				"$(SRCROOT)/resources/release-dylibs/liblcms2.2.dylib",
+				"$(SRCROOT)/resources/release-dylibs/libpng16.16.dylib",
+				"$(SRCROOT)/resources/release-binaries/cjpeg",
+				"$(SRCROOT)/resources/release-binaries/djpeg",
+				"$(SRCROOT)/resources/release-binaries/jpegtran",
+				"$(SRCROOT)/resources/release-binaries/pngquant",
+			);
+			name = "Copy Release Dylibs";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/libjpeg.8.dylib",
+				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/liblcms2.2.dylib",
+				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/libpng16.16.dylib",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ \"${CONFIGURATION}\" = \"Release\" ]; then\n  cp -f \"${SRCROOT}/resources/release-dylibs/\"*.dylib \"${BUILT_PRODUCTS_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\"/\n  cp -f \"${SRCROOT}/resources/release-binaries/\"* \"${BUILT_PRODUCTS_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\"/\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
 		21D593B02FFD5B75006352F5 /* Debug */ = {
@@ -236,7 +267,7 @@
 				DEVELOPMENT_TEAM = M74ML983V7;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
