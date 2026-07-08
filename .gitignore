@@ -17,3 +17,6 @@ Package.resolved
 *.log
 *.swp
 *.swo
+
+# Development
+.superpowers/

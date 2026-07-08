@@ -1,29 +1,22 @@
 # Smoosh
 
-A free, open-source macOS menu bar application for optimizing images via drag-and-drop.
+A free, open-source macOS menu bar application for optimizing images, videos, and PDFs via drag-and-drop.
 
 Built with Swift and SwiftUI, targeting macOS 14+. Licensed under GPL v2.
 
 ## Features
 
 - **Menu bar popover** — click the icon to open, drag files onto it, click outside to dismiss
-- **Image optimization** — PNG, JPEG, and GIF files
-- **Lossy compression** — pngquant (PNG) and MozJPEG (JPEG) for ~50-80% savings
-- **Lossless fallback** — OxiPNG for PNGs too large for lossy; jpegtran for huge JPEGs
-- **Drag-and-drop** — drop files directly into the popover or onto the menu bar icon
-- **Folder support** — drop a folder to optimize all supported images inside it
-- **Fade animations** — smooth open/close
-- **History** — scrollable list showing savings (e.g. "5.2 MB → 1.8 MB")
-- **Retry** — failed items have a retry button
-
-## Future
-
-- **Video optimization** — FFmpeg-based H.264/HEVC transcoding
-- **PDF optimization** — native CoreGraphics-based compression
+- **Image optimization** — PNG, JPEG, and GIF compression
+- **Lossy + lossless fallback** — aggressive savings most of the time, safe fallback for huge files
+- **Drag-and-drop anywhere** — drop onto the popover or directly onto the menu bar icon
+- **Folder support** — drop a folder to optimize all supported files inside it
+- **History list** — see what was optimized, by how much, and retry if something failed
+- **Smooth animations** — fade in/out, no sudden pop-in
 
 ## How It Works
 
-Smoosh bundles open-source CLI compression tools in the app bundle. When you drop a file:
+Smoosh bundles open-source CLI compression tools inside the app. When you drop a file:
 
 1. The app detects the file type (PNG/JPEG/GIF)
 2. Launches the appropriate tool via Swift's `Process` API
@@ -41,13 +34,15 @@ Smoosh bundles open-source CLI compression tools in the app bundle. When you dro
 | JPEG (fallback) | jpegtran | Lossless | 5-15% |
 | GIF | Gifsicle | Lossless | 5-20% |
 
+Video (FFmpeg) and PDF (CoreGraphics) engines coming.
+
 ## Installation
 
-### Option 1: Download Release (coming soon)
+### Download
 
-Download the latest `.app` from the Releases page, drag to Applications.
+Grab the latest `.app` from the [Releases](https://github.com/zieqs/smoosh/releases) page, drag to Applications, and launch. The app lands in your menu bar.
 
-### Option 2: Build from Source
+### Build from Source
 
 Requires Xcode 16+ and macOS 14+.
 
@@ -58,22 +53,9 @@ xcodebuild -project smoosh.xcodeproj -scheme smoosh -configuration Release
 open "Build/Products/Release/smoosh.app"
 ```
 
-The Release build is self-contained — all binaries and dylibs are bundled.
+The Release build is fully self-contained — all binaries and libraries are bundled in the `.app`.
 
-### Development Build
-
-```bash
-xcodebuild -project smoosh.xcodeproj -scheme smoosh
-open "Build/Products/Debug/smoosh.app"
-```
-
-The Debug build uses `DYLD_FALLBACK_LIBRARY_PATH` to find dylibs at `/opt/homebrew/lib/`. Install dependencies with:
-
-```bash
-brew install pngquant oxipng gifsicle
-```
-
-## Project Structure
+## Architecture
 
 ```
 smoosh/
@@ -105,34 +87,33 @@ smoosh/
     Environment/
       ClosePanelAction.swift    # Environment key for panel actions
   resources/
-    release-binaries/          # Pre-modified binaries for Release builds
+    release-binaries/          # Pre-linked binaries for Release builds
     release-dylibs/            # Bundled dylibs for Release builds
   docs/
     CONTEXT.md                 # Project specification
     AGENTS.md                  # Agent instructions
 ```
 
-## Architecture
-
-- **`MediaOptimizerProtocol`** — Each format implements this protocol, returning an `AsyncStream<OptimizationState>` for progress reporting
-- **`ImageOptimizationService`** — Singleton coordinator that detects format, routes to the right optimizer, manages temp files, and updates AppState
+- **`MediaOptimizerProtocol`** — Each format implements this, returning an `AsyncStream<OptimizationState>` for progress
+- **`ImageOptimizationService`** — Singleton coordinator: detects format, routes to the right optimizer, manages temp files, updates AppState
 - **`ProcessRunner`** — Async wrapper around `Process()` with `readabilityHandler` for streaming stdout/stderr
-- **`NSStatusItem` + `NSPanel`** — Custom menu bar popover (not SwiftUI `MenuBarExtra`) for fine-grained control over positioning, animation, and drag handling
+- **`NSStatusItem` + `NSPanel`** — Custom menu bar popover (not SwiftUI `MenuBarExtra`) for fine-grained positioning, animation, and drag handling
 
 ## Attribution
 
-Smoosh bundles open-source software. Licenses for each tool are included in their respective source distributions.
+Smoosh bundles open-source software:
 
 - [pngquant](https://pngquant.org/) — GPL v3
 - [OxiPNG](https://github.com/shssoichiro/oxipng) — MIT
 - [MozJPEG](https://github.com/mozilla/mozjpeg) — BSD-style
 - [Gifsicle](https://www.lcdf.org/gifsicle/) — GPL v2
-- [FFmpeg](https://ffmpeg.org/) — LGPL/GPL (future)
 
 ## License
 
-Smoosh itself is licensed under **GNU General Public License v2 (GPL v2)**.
+Smoosh is free software licensed under the **GNU General Public License v2**.
 
 ## Support
 
-If you find this useful, consider supporting development via [GitHub Sponsors](https://github.com/sponsors/zieqs) or [Ko-fi](https://ko-fi.com/zieqs).
+If you find Smoosh useful, consider supporting development:
+- [GitHub Sponsors](https://github.com/sponsors/zieqs)
+- [Ko-fi](https://ko-fi.com/zieqs)
