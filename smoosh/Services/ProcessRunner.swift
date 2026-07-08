@@ -24,13 +24,34 @@ struct ProcessRunner {
         process.standardError = stderrPipe
 
         return try await withCheckedThrowingContinuation { continuation in
+            var stdoutData = Data()
+            var stderrData = Data()
+
+            stdoutPipe.fileHandleForReading.readabilityHandler = { handle in
+                let data = handle.availableData
+                if !data.isEmpty {
+                    stdoutData.append(data)
+                }
+            }
+
+            stderrPipe.fileHandleForReading.readabilityHandler = { handle in
+                let data = handle.availableData
+                if !data.isEmpty {
+                    stderrData.append(data)
+                }
+            }
+
             process.terminationHandler = { proc in
-                let stdout = (try? stdoutPipe.fileHandleForReading.readToEnd()) ?? Data()
-                let stderr = (try? stderrPipe.fileHandleForReading.readToEnd()) ?? Data()
+                stdoutPipe.fileHandleForReading.readabilityHandler = nil
+                stderrPipe.fileHandleForReading.readabilityHandler = nil
+                let remaining = (try? stdoutPipe.fileHandleForReading.readToEnd()) ?? Data()
+                stdoutData.append(remaining)
+                let errRemaining = (try? stderrPipe.fileHandleForReading.readToEnd()) ?? Data()
+                stderrData.append(errRemaining)
                 continuation.resume(returning: ProcessResult(
                     exitCode: proc.terminationStatus,
-                    stdoutData: stdout,
-                    stderrData: stderr
+                    stdoutData: stdoutData,
+                    stderrData: stderrData
                 ))
             }
             do {
