@@ -61,7 +61,6 @@
 				21D593A32FFD5B74006352F5 /* Sources */,
 				21D593A42FFD5B74006352F5 /* Frameworks */,
 				21D593A52FFD5B74006352F5 /* Resources */,
-				7B5412F98C83443980B67E2BD52ABFC7 /* Copy CLI Dylibs */,
 			);
 			buildRules = (
 			);
@@ -122,6 +121,8 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+
+
 /* Begin PBXSourcesBuildPhase section */
 		21D593A32FFD5B74006352F5 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -131,33 +132,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-		/* Begin PBXShellScriptBuildPhase section */
-		7B5412F98C83443980B67E2BD52ABFC7 /* Copy CLI Dylibs */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"$(SRCROOT)/smoosh/Resources/liblcms2.2.dylib",
-				"$(SRCROOT)/smoosh/Resources/libpng16.16.dylib",
-				"$(SRCROOT)/smoosh/Resources/libjpeg.8.dylib",
-			);
-			name = "Copy CLI Dylibs";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/liblcms2.2.dylib",
-				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/libpng16.16.dylib",
-				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/libjpeg.8.dylib",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "cp -f \"${SRCROOT}/smoosh/Resources/liblcms2.2.dylib\" \"${BUILT_PRODUCTS_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\"/\ncp -f \"${SRCROOT}/smoosh/Resources/libpng16.16.dylib\" \"${BUILT_PRODUCTS_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\"/\ncp -f \"${SRCROOT}/smoosh/Resources/libjpeg.8.dylib\" \"${BUILT_PRODUCTS_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\"/\n";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
 		21D593B02FFD5B75006352F5 /* Debug */ = {

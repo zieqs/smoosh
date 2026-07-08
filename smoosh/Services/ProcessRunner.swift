@@ -18,6 +18,10 @@ struct ProcessRunner {
         process.executableURL = executableURL
         process.arguments = arguments
 
+        var env = ProcessInfo.processInfo.environment
+        env["DYLD_FALLBACK_LIBRARY_PATH"] = Bundle.main.resourcePath ?? "/opt/homebrew/lib"
+        process.environment = env
+
         let stdoutPipe = Pipe()
         let stderrPipe = Pipe()
         process.standardOutput = stdoutPipe
