@@ -19,7 +19,8 @@ struct ProcessRunner {
         process.arguments = arguments
 
         var env = ProcessInfo.processInfo.environment
-        env["DYLD_FALLBACK_LIBRARY_PATH"] = Bundle.main.resourcePath ?? "/opt/homebrew/lib"
+        let libPaths = ["/opt/homebrew/lib", Bundle.main.resourcePath].compactMap { $0 }.joined(separator: ":")
+        env["DYLD_FALLBACK_LIBRARY_PATH"] = libPaths
         process.environment = env
 
         let stdoutPipe = Pipe()
