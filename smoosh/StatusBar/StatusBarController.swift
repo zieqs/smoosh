@@ -8,16 +8,19 @@ final class StatusBarController: NSObject {
     private let appState = AppState()
 
     private var escMonitor: Any?
+    private var outsideClickMonitor: Any?
 
     override init() {
         super.init()
         setupStatusItem()
         setupPanel()
         setupEscMonitor()
+        setupOutsideClickMonitor()
     }
 
     deinit {
         if let m = escMonitor { NSEvent.removeMonitor(m) }
+        if let m = outsideClickMonitor { NSEvent.removeMonitor(m) }
         hostingController.removeObserver(self, forKeyPath: "preferredContentSize")
     }
 
@@ -72,6 +75,23 @@ final class StatusBarController: NSObject {
             guard let self, panel.isVisible, event.keyCode == 53 else { return event }
             closePanel()
             return nil
+        }
+    }
+
+    private func setupOutsideClickMonitor() {
+        outsideClickMonitor = NSEvent.addGlobalMonitorForEvents(matching: [.leftMouseDown, .rightMouseDown]) { [weak self] event in
+            guard let self, panel.isVisible else { return }
+
+            let clickLocation = event.locationInWindow
+
+            if let button = statusItem.button, let buttonWindow = button.window {
+                let buttonFrame = buttonWindow.convertToScreen(button.frame)
+                if buttonFrame.contains(clickLocation) { return }
+            }
+
+            if !panel.frame.contains(clickLocation) {
+                closePanel()
+            }
         }
     }
 
