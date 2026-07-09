@@ -14,7 +14,9 @@ final class StatusBarController: NSObject {
     override init() {
         super.init()
         appState.onDidChange = { [weak self] in
-            self?.syncBubbles()
+            DispatchQueue.main.async {
+                self?.syncBubbles()
+            }
         }
         setupStatusItem()
         setupPanel()

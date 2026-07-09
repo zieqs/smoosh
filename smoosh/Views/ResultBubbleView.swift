@@ -64,6 +64,15 @@ struct ResultBubbleView: View {
             }
         }
         .padding(12)
+        .background {
+            RoundedRectangle(cornerRadius: 10)
+                .fill(.windowBackground)
+                .shadow(color: .black.opacity(0.15), radius: 8, y: 2)
+        }
+        .overlay(
+            RoundedRectangle(cornerRadius: 10)
+                .stroke(.white.opacity(0.15), lineWidth: 1)
+        )
     }
 
     private func shortError(_ message: String) -> String {
