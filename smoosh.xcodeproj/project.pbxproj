@@ -133,10 +133,13 @@
 				"$(SRCROOT)/resources/release-dylibs/libjpeg.8.dylib",
 				"$(SRCROOT)/resources/release-dylibs/liblcms2.2.dylib",
 				"$(SRCROOT)/resources/release-dylibs/libpng16.16.dylib",
+				"$(SRCROOT)/resources/release-dylibs/libqpdf.30.dylib",
+				"$(SRCROOT)/resources/release-dylibs/libcrypto.3.dylib",
 				"$(SRCROOT)/resources/release-binaries/cjpeg",
 				"$(SRCROOT)/resources/release-binaries/djpeg",
 				"$(SRCROOT)/resources/release-binaries/jpegtran",
 				"$(SRCROOT)/resources/release-binaries/pngquant",
+				"$(SRCROOT)/resources/release-binaries/qpdf",
 			);
 			name = "Copy Release Dylibs";
 			outputFileListPaths = (
@@ -145,6 +148,8 @@
 				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/libjpeg.8.dylib",
 				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/liblcms2.2.dylib",
 				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/libpng16.16.dylib",
+				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/libqpdf.30.dylib",
+				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/libcrypto.3.dylib",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
