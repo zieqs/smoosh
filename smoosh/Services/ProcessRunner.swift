@@ -59,16 +59,12 @@ struct ProcessRunner {
                     stdoutData: outData + remaining,
                     stderrData: errData + errRemaining
                 )
-                DispatchQueue.main.async {
-                    continuation.resume(returning: result)
-                }
+                continuation.resume(returning: result)
             }
             do {
                 try process.run()
             } catch {
-                DispatchQueue.main.async {
-                    continuation.resume(throwing: error)
-                }
+                continuation.resume(throwing: error)
             }
         }
     }

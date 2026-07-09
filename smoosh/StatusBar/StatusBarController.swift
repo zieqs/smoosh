@@ -13,11 +13,12 @@ final class StatusBarController: NSObject {
 
     override init() {
         super.init()
-        appState.onDidChange = { [weak self] in
-            DispatchQueue.main.async {
-                self?.syncBubbles()
-            }
-        }
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(syncBubbles),
+            name: .appStateBubbleUpdate,
+            object: nil
+        )
         setupStatusItem()
         setupPanel()
         setupEscMonitor()
@@ -25,6 +26,7 @@ final class StatusBarController: NSObject {
     }
 
     deinit {
+        NotificationCenter.default.removeObserver(self)
         if let m = escMonitor { NSEvent.removeMonitor(m) }
         if let m = outsideClickMonitor { NSEvent.removeMonitor(m) }
         hostingController.removeObserver(self, forKeyPath: "preferredContentSize")
@@ -206,7 +208,7 @@ final class StatusBarController: NSObject {
 
     // MARK: - Bubbles
 
-    private func syncBubbles() {
+    @objc private func syncBubbles() {
         let visible = appState.visibleBubbles
         let visibleIDs = Set(visible.map { $0.id })
         let currentIDs = Set(bubblePanels.keys)
