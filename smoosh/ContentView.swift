@@ -2,6 +2,8 @@ import SwiftUI
 
 struct ContentView: View {
     @Environment(AppState.self) private var appState
+    @Environment(Preferences.self) private var preferences
+    @State private var showPreferences = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -17,7 +19,7 @@ struct ContentView: View {
             Divider()
                 .padding(.horizontal)
 
-            BottomButtonsView()
+            BottomButtonsView(showPreferences: $showPreferences)
         }
         .frame(width: 300)
         .frame(minHeight: 280)
@@ -28,5 +30,8 @@ struct ContentView: View {
             RoundedRectangle(cornerRadius: 12)
                 .stroke(.white.opacity(0.15), lineWidth: 1)
         )
+        .sheet(isPresented: $showPreferences) {
+            PreferencesView()
+        }
     }
 }

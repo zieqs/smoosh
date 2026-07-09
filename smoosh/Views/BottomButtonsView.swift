@@ -1,10 +1,12 @@
 import SwiftUI
 
 struct BottomButtonsView: View {
+    @Binding var showPreferences: Bool
+
     var body: some View {
         VStack(spacing: 0) {
             Button {
-                //Open Preference View Here
+                showPreferences = true
             } label: {
                 Label("Preferences ", systemImage: "gear")
                     .frame(maxWidth: .infinity)

@@ -47,6 +47,7 @@ final class StatusBarController: NSObject {
         hostingController = NSHostingController(rootView: AnyView(
             ContentView()
                 .environment(appState)
+                .environment(Preferences.shared)
         ))
         hostingController.sizingOptions = [.preferredContentSize]
 
