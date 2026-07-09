@@ -15,6 +15,8 @@ final class OptimizationCoordinator {
             PDFOptimizationService.shared.optimize(fileAt: url, appState: appState)
         } else if utType.conforms(to: .image) {
             ImageOptimizationService.shared.optimize(fileAt: url, appState: appState)
+        } else if utType.conforms(to: .movie) {
+            VideoOptimizationService.shared.optimize(fileAt: url, appState: appState)
         }
     }
 }

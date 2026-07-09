@@ -1,14 +1,17 @@
 import Cocoa
 import SwiftUI
+import UniformTypeIdentifiers
 
 final class StatusBarController: NSObject {
     private var statusItem: NSStatusItem!
-    private var panel: NSPanel!
+    private(set) var panel: NSPanel!
     private var hostingController: NSHostingController<AnyView>!
     private let appState = AppState()
 
     private var escMonitor: Any?
     private var outsideClickMonitor: Any?
+
+    var sharedAppState: AppState { appState }
 
     override init() {
         super.init()
@@ -33,6 +36,7 @@ final class StatusBarController: NSObject {
         button?.image = NSImage(systemSymbolName: "rectangle.compress.vertical", accessibilityDescription: "Smoosh")
         button?.action = #selector(togglePanel)
         button?.target = self
+        button?.setAccessibilityIdentifier("smooshStatusItem")
 
         let overlay = DragOverlayView(frame: button?.bounds ?? .zero)
         overlay.autoresizingMask = [.width, .height]
@@ -170,6 +174,37 @@ final class StatusBarController: NSObject {
             panel.orderOut(nil)
             panel.alphaValue = 1
             panel.setFrame(currentFrame, display: false)
+        }
+    }
+
+    // MARK: - Stress Testing
+
+    func runStressTest(folderURL: URL) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+            guard let self else { return }
+            self.openPanel(activateApp: true)
+
+            let supportedTypes: [UTType] = [.png, .jpeg, .gif, .pdf, .mpeg4Movie, .quickTimeMovie, .movie]
+            let enumerator = FileManager.default.enumerator(
+                at: folderURL,
+                includingPropertiesForKeys: [.isRegularFileKey],
+                options: [.skipsHiddenFiles]
+            )
+
+            var urls: [URL] = []
+            while let child = enumerator?.nextObject() as? URL {
+                guard !child.hasDirectoryPath else { continue }
+                guard let type = UTType(filenameExtension: child.pathExtension),
+                      supportedTypes.contains(type) else { continue }
+                urls.append(child)
+            }
+
+            // Sort for deterministic ordering
+            urls.sort { $0.lastPathComponent < $1.lastPathComponent }
+
+            for url in urls {
+                OptimizationCoordinator.shared.optimize(fileAt: url, appState: self.appState)
+            }
         }
     }
 

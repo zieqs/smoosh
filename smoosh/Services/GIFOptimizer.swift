@@ -18,7 +18,8 @@ struct GIFOptimizer: MediaOptimizerProtocol {
                 do {
                     let result = try await ProcessRunner.run(
                         executableURL: binary,
-                        arguments: ["--optimize=3", inputURL.path, "-o", outputURL.path]
+                        arguments: ["--optimize=3", inputURL.path, "-o", outputURL.path],
+                        timeout: 30
                     )
 
                     if result.exitCode == 0 {

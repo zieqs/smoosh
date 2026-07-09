@@ -18,7 +18,7 @@ struct DropZoneView: View {
                     .fontWeight(.semibold)
                     .foregroundStyle(.primary)
 
-                Text("Supports images, PDFs")
+                Text("Supports images, PDFs, and video")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -47,6 +47,7 @@ struct DropZoneView: View {
             return true
         }
         .animation(.spring(response: 0.3, dampingFraction: 0.7), value: isDragging)
+        .accessibilityIdentifier("dropZone")
     }
 
     private func handleDrop(_ providers: [NSItemProvider]) {
@@ -65,7 +66,7 @@ struct DropZoneView: View {
         guard FileManager.default.fileExists(atPath: url.path, isDirectory: &isDirectory) else { return }
 
         if isDirectory.boolValue {
-            let supportedTypes: [UTType] = [.png, .jpeg, .gif, .pdf]
+            let supportedTypes: [UTType] = [.png, .jpeg, .gif, .pdf, .mpeg4Movie, .quickTimeMovie, .movie]
             let enumerator = FileManager.default.enumerator(at: url, includingPropertiesForKeys: nil)
             while let child = enumerator?.nextObject() as? URL {
                 guard !child.hasDirectoryPath else { continue }

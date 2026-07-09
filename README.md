@@ -8,6 +8,8 @@ Built with Swift and SwiftUI, targeting macOS 14+. Licensed under GPL v2.
 
 - **Menu bar popover** — click the icon to open, drag files onto it, click outside to dismiss
 - **Image optimization** — PNG, JPEG, and GIF compression
+- **Video optimization** — MP4 and MOV compression via native AVFoundation + FFmpeg fallback
+- **PDF optimization** — structural compression via qpdf + aggressive rasterization mode
 - **Lossy + lossless fallback** — aggressive savings most of the time, safe fallback for huge files
 - **Drag-and-drop anywhere** — drop onto the popover or directly onto the menu bar icon
 - **Folder support** — drop a folder to optimize all supported files inside it
@@ -34,7 +36,20 @@ Smoosh bundles open-source CLI compression tools inside the app. When you drop a
 | JPEG (fallback) | jpegtran | Lossless | 5-15% |
 | GIF | Gifsicle | Lossless | 5-20% |
 
-Video (FFmpeg) and PDF (CoreGraphics) engines coming.
+### Engines
+
+| Format | Tool | Mode | Typical Savings |
+|--------|------|------|-----------------|
+| PNG | pngquant | Lossy | 50-80% |
+| PNG (fallback) | OxiPNG | Lossless | 5-15% |
+| JPEG | MozJPEG cjpeg | Lossy | 30-60% |
+| JPEG (fallback) | jpegtran | Lossless | 5-15% |
+| GIF | Gifsicle | Lossless | 5-20% |
+| PDF | qpdf | Lossless | 10-40% |
+| PDF (aggressive) | CoreGraphics | Lossy (200 DPI JPEG) | 50-90% |
+| Video (MP4/MOV) — Fast | FFmpeg (h264_videotoolbox) | Lossy | 20-40% |
+| Video (MP4/MOV) — Low/Medium/High | FFmpeg (libx264) | Lossy | 30-60% |
+| Video (fallback) | AVFoundation | Lossy | 30-60% |
 
 ## Installation
 
@@ -66,12 +81,16 @@ smoosh/
     ContentView.swift         # Root popover view
     Assets.xcassets/          # App icons
     Services/
-      MediaOptimizerProtocol.swift  # Protocol, state, metrics, errors
-      ProcessRunner.swift           # Async Process wrapper
-      ImageOptimizationService.swift # Coordinator/router
+      MediaOptimizerProtocol.swift   # Protocol, state, metrics, errors
+      OptimizationCoordinator.swift  # Routes by UTType to appropriate service
+      ProcessRunner.swift            # Async Process wrapper
+      ImageOptimizationService.swift # Image coordinator/router
       PNGOptimizer.swift
       JPEGOptimizer.swift
       GIFOptimizer.swift
+      PDFOptimizationService.swift   # PDF optimizer (qpdf + CoreGraphics)
+      PDFRasterizationOptimizer.swift
+      VideoOptimizationService.swift # Video optimizer (AVFoundation + FFmpeg)
     Helpers/
       BinaryLocator.swift    # Find CLIs in bundle or PATH
     Models/
@@ -104,6 +123,11 @@ Smoosh bundles open-source software:
 - [OxiPNG](https://github.com/shssoichiro/oxipng) — MIT
 - [MozJPEG](https://github.com/mozilla/mozjpeg) — BSD-style
 - [Gifsicle](https://www.lcdf.org/gifsicle/) — GPL v2
+- [qpdf](https://qpdf.sourceforge.io/) — Apache 2.0
+- [FFmpeg](https://ffmpeg.org/) — LGPL / GPL v2
+- [libjpeg-turbo](https://libjpeg-turbo.org/) — BSD-style / IJG
+- [libpng](http://www.libpng.org/pub/png/libpng.html) — PNG Reference Library License
+- [Little CMS](https://www.littlecms.com/) — MIT
 
 ## License
 

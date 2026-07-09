@@ -19,6 +19,7 @@ struct HistoryListView: View {
                     .buttonStyle(.plain)
                     .font(.caption)
                     .foregroundStyle(.secondary)
+                    .accessibilityIdentifier("clearHistoryButton")
                 }
                 .padding(.horizontal)
                 .padding(.top, 8)
@@ -76,6 +77,23 @@ private struct HistoryRow: View {
             statusBadge
         }
         .padding(.vertical, 4)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(accessibilityLabelText)
+        .accessibilityIdentifier("historyRow-\(item.id.uuidString)")
+    }
+
+    private var accessibilityLabelText: String {
+        switch item.status {
+        case .pending:
+            return "\(item.fileName) Pending"
+        case .processing(let progress):
+            return "\(item.fileName) Processing \(Int(progress * 100)) percent"
+        case .completed:
+            let savings = item.formattedSavings ?? "Done"
+            return "\(item.fileName) Completed \(savings)"
+        case .failed:
+            return "\(item.fileName) Failed"
+        }
     }
 
     private var formattedSize: String {

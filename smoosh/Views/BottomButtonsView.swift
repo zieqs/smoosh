@@ -14,7 +14,8 @@ struct BottomButtonsView: View {
             }
             .buttonStyle(.bordered)
             .controlSize(.small)
-            
+            .accessibilityIdentifier("preferencesButton")
+
             Divider()
                 .frame(height: 20)
             
@@ -42,6 +43,7 @@ struct BottomButtonsView: View {
             }
             .buttonStyle(.bordered)
             .controlSize(.small)
+            .accessibilityIdentifier("quitButton")
         }
         .fixedSize(horizontal: false, vertical: true)
         .padding(.horizontal)

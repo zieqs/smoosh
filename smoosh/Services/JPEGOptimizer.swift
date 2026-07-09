@@ -63,7 +63,8 @@ struct JPEGOptimizer: MediaOptimizerProtocol {
 
                     let fallbackResult = try await ProcessRunner.run(
                         executableURL: jpegtran,
-                        arguments: ["-copy", "none", "-optimize", "-progressive", "-outfile", outputURL.path, inputURL.path]
+                        arguments: ["-copy", "none", "-optimize", "-progressive", "-outfile", outputURL.path, inputURL.path],
+                        timeout: 30
                     )
 
                     let fallbackSize = (try? FileManager.default.attributesOfItem(atPath: outputURL.path))?[.size] as? Int64 ?? 0

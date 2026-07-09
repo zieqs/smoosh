@@ -19,7 +19,8 @@ struct PNGOptimizer: MediaOptimizerProtocol {
                 do {
                     let result = try await ProcessRunner.run(
                         executableURL: pngquant,
-                        arguments: ["--quality=65-80", "--speed", "1", "--output", outputURL.path, inputURL.path]
+                        arguments: ["--quality=65-80", "--speed", "1", "--output", outputURL.path, inputURL.path],
+                        timeout: 30
                     )
 
                     if result.exitCode == 0 {
@@ -39,7 +40,8 @@ struct PNGOptimizer: MediaOptimizerProtocol {
 
                         let oxiResult = try await ProcessRunner.run(
                             executableURL: oxipng,
-                            arguments: ["-o", "4", "--strip", "all", "--alpha", outputURL.path]
+                            arguments: ["-o", "4", "--strip", "all", "--alpha", outputURL.path],
+                            timeout: 30
                         )
 
                         if oxiResult.exitCode == 0 {

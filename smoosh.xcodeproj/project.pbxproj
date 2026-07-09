@@ -6,8 +6,26 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		66E1D499D80715D715967ED9 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EF8CEE38E7441D57F70DB75 /* Cocoa.framework */; };
+		CB38D8A28703D6F7A8808D92 /* SmooshStressTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F4E9DD508FCE0D6A4E8514D /* SmooshStressTests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		C86980BE034D66CE592E589F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 21D5939F2FFD5B74006352F5 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 21D593A62FFD5B74006352F5;
+			remoteInfo = smoosh;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		21D593A72FFD5B74006352F5 /* smoosh.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = smoosh.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		6CEEF549972061ECFD472E51 /* smooshUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = smooshUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		7F4E9DD508FCE0D6A4E8514D /* SmooshStressTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SmooshStressTests.swift; sourceTree = "<group>"; };
+		9EF8CEE38E7441D57F70DB75 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.0.sdk/System/Library/Frameworks/Cocoa.framework; sourceTree = DEVELOPER_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -31,6 +49,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		8AA2B97ABFC18ECF0B64EDD6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				66E1D499D80715D715967ED9 /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -40,6 +66,8 @@
 				21D593A92FFD5B74006352F5 /* smoosh */,
 				21D593A82FFD5B74006352F5 /* Products */,
 				21D593BA2FFD5BD8006352F5 /* docs */,
+				81498395884D419915F4CE78 /* smooshUITests */,
+				52D0475859BB6C2FDC560737 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -47,8 +75,33 @@
 			isa = PBXGroup;
 			children = (
 				21D593A72FFD5B74006352F5 /* smoosh.app */,
+				6CEEF549972061ECFD472E51 /* smooshUITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		42C6B9C4FEFD256838245813 /* OS X */ = {
+			isa = PBXGroup;
+			children = (
+				9EF8CEE38E7441D57F70DB75 /* Cocoa.framework */,
+			);
+			name = "OS X";
+			sourceTree = "<group>";
+		};
+		52D0475859BB6C2FDC560737 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				42C6B9C4FEFD256838245813 /* OS X */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		81498395884D419915F4CE78 /* smooshUITests */ = {
+			isa = PBXGroup;
+			children = (
+				7F4E9DD508FCE0D6A4E8514D /* SmooshStressTests.swift */,
+			);
+			path = smooshUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -71,11 +124,27 @@
 				21D593A92FFD5B74006352F5 /* smoosh */,
 			);
 			name = smoosh;
-			packageProductDependencies = (
-			);
 			productName = smoosh;
 			productReference = 21D593A72FFD5B74006352F5 /* smoosh.app */;
 			productType = "com.apple.product-type.application";
+		};
+		EF94E9224F78FDD9B296C71F /* smooshUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B3FDDECDD904F62A050BC70A /* Build configuration list for PBXNativeTarget "smooshUITests" */;
+			buildPhases = (
+				12C8824F207829E5A552D597 /* Sources */,
+				8AA2B97ABFC18ECF0B64EDD6 /* Frameworks */,
+				482E2E92761BC2AC5BCF4F9C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				5EED430575198C29BA9390B5 /* PBXTargetDependency */,
+			);
+			name = smooshUITests;
+			productName = smooshUITests;
+			productReference = 6CEEF549972061ECFD472E51 /* smooshUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
 
@@ -107,12 +176,20 @@
 			projectRoot = "";
 			targets = (
 				21D593A62FFD5B74006352F5 /* smoosh */,
+				EF94E9224F78FDD9B296C71F /* smooshUITests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		21D593A52FFD5B74006352F5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		482E2E92761BC2AC5BCF4F9C /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -133,13 +210,11 @@
 				"$(SRCROOT)/resources/release-dylibs/libjpeg.8.dylib",
 				"$(SRCROOT)/resources/release-dylibs/liblcms2.2.dylib",
 				"$(SRCROOT)/resources/release-dylibs/libpng16.16.dylib",
-				"$(SRCROOT)/resources/release-dylibs/libqpdf.30.dylib",
-				"$(SRCROOT)/resources/release-dylibs/libcrypto.3.dylib",
 				"$(SRCROOT)/resources/release-binaries/cjpeg",
 				"$(SRCROOT)/resources/release-binaries/djpeg",
 				"$(SRCROOT)/resources/release-binaries/jpegtran",
 				"$(SRCROOT)/resources/release-binaries/pngquant",
-				"$(SRCROOT)/resources/release-binaries/qpdf",
+				"$(SRCROOT)/resources/release-binaries/ffmpeg",
 			);
 			name = "Copy Release Dylibs";
 			outputFileListPaths = (
@@ -148,16 +223,22 @@
 				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/libjpeg.8.dylib",
 				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/liblcms2.2.dylib",
 				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/libpng16.16.dylib",
-				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/libqpdf.30.dylib",
-				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/libcrypto.3.dylib",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp -f \"${SRCROOT}/resources/release-dylibs/\"*.dylib \"${BUILT_PRODUCTS_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\"/\ncp -f \"${SRCROOT}/resources/release-binaries/\"* \"${BUILT_PRODUCTS_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\"/\n";
+			shellScript = "RESOURCES=\"${BUILT_PRODUCTS_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\"\ncp -f \"${SRCROOT}/resources/release-dylibs/\"*.dylib \"${RESOURCES}\"/\ncp -f \"${SRCROOT}/resources/release-binaries/\"* \"${RESOURCES}\"/\n\n# Bundle ghostscript: copy binary and all transitive dylibs (preserving absolute Homebrew paths)\n# DYLD_FALLBACK_LIBRARY_PATH in ProcessRunner handles the path resolution at runtime.\nGS_SOURCE=\"/opt/homebrew/bin/gs\"\nif [ -f \"$GS_SOURCE\" ]; then\n  cp -f \"$GS_SOURCE\" \"${RESOURCES}/gs\"\n  chmod +w \"${RESOURCES}/gs\"\n  # Collect all transitive dylib dependencies using otool -L recursively\n  for dep in $(otool -L \"$GS_SOURCE\" 2>/dev/null | grep '/opt/homebrew/' | awk '{print $1}'); do\n    cp -f \"$dep\" \"${RESOURCES}/\" 2>/dev/null || true\n    # Also check for transitive deps of this dylib\n    for dep2 in $(otool -L \"$dep\" 2>/dev/null | grep '/opt/homebrew/' | awk '{print $1}'); do\n      cp -f \"$dep2\" \"${RESOURCES}/\" 2>/dev/null || true\n      # One more level for deep transitive deps\n      for dep3 in $(otool -L \"$dep2\" 2>/dev/null | grep '/opt/homebrew/' | awk '{print $1}'); do\n        cp -f \"$dep3\" \"${RESOURCES}/\" 2>/dev/null || true\n      done\n    done\n  done\n  # Ad-hoc sign like other bundled binaries\n  codesign --remove-signature \"${RESOURCES}/gs\" 2>/dev/null || true\n  codesign -s - --force \"${RESOURCES}/gs\" 2>/dev/null || true\nfi\n\n# Fix rpath references for other bundled binaries\nfor b in pngquant jpegtran cjpeg djpeg; do\n  [ ! -f \"${RESOURCES}/${b}\" ] && continue\n  for dep in $(otool -L \"${RESOURCES}/${b}\" 2>/dev/null | grep -E '@rpath|@loader_path/../lib' | awk '{print $1}'); do\n    base=$(basename \"${dep}\")\n    install_name_tool -change \"${dep}\" \"@loader_path/${base}\" \"${RESOURCES}/${b}\" 2>/dev/null || true\n  done\n  codesign --remove-signature \"${RESOURCES}/${b}\" 2>/dev/null || true\n  codesign -s - --force \"${RESOURCES}/${b}\" 2>/dev/null || true\ndone\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		12C8824F207829E5A552D597 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CB38D8A28703D6F7A8808D92 /* SmooshStressTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		21D593A32FFD5B74006352F5 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -167,7 +248,40 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		5EED430575198C29BA9390B5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = smoosh;
+			target = 21D593A62FFD5B74006352F5 /* smoosh */;
+			targetProxy = C86980BE034D66CE592E589F /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		1548D306B54BCC9EDC55E1A7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = M74ML983V7;
+				ENABLE_APP_SANDBOX = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 26.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.zieqs.smooshUITests;
+				PRODUCT_NAME = smooshUITests;
+				SDKROOT = macosx;
+				SWIFT_STDLIB = "$(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)";
+				SWIFT_VERSION = 6.0;
+				TEST_TARGET_NAME = smoosh;
+			};
+			name = Debug;
+		};
 		21D593B02FFD5B75006352F5 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -293,6 +407,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = smoosh/smoosh.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -330,6 +445,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = smoosh/smoosh.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -362,6 +478,30 @@
 			};
 			name = Release;
 		};
+		E51B83C35FEE752D6F1C7372 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = M74ML983V7;
+				ENABLE_APP_SANDBOX = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 26.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.zieqs.smooshUITests;
+				PRODUCT_NAME = smooshUITests;
+				SDKROOT = macosx;
+				SWIFT_STDLIB = "$(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)";
+				SWIFT_VERSION = 6.0;
+				TEST_TARGET_NAME = smoosh;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -379,6 +519,15 @@
 			buildConfigurations = (
 				21D593B32FFD5B75006352F5 /* Debug */,
 				21D593B42FFD5B75006352F5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B3FDDECDD904F62A050BC70A /* Build configuration list for PBXNativeTarget "smooshUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E51B83C35FEE752D6F1C7372 /* Release */,
+				1548D306B54BCC9EDC55E1A7 /* Debug */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

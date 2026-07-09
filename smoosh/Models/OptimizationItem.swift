@@ -36,4 +36,9 @@ struct OptimizationItem: Identifiable {
         guard let ext = sourceURL?.pathExtension else { return false }
         return UTType(filenameExtension: ext)?.conforms(to: .image) ?? false
     }
+
+    var isVideo: Bool {
+        guard let ext = sourceURL?.pathExtension else { return false }
+        return UTType(filenameExtension: ext)?.conforms(to: .movie) ?? false
+    }
 }
