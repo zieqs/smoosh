@@ -1,6 +1,5 @@
 import Cocoa
 import SwiftUI
-import Observation
 
 final class StatusBarController: NSObject {
     private var statusItem: NSStatusItem!
@@ -22,6 +21,7 @@ final class StatusBarController: NSObject {
     }
 
     deinit {
+        NotificationCenter.default.removeObserver(self)
         if let m = escMonitor { NSEvent.removeMonitor(m) }
         if let m = outsideClickMonitor { NSEvent.removeMonitor(m) }
         hostingController.removeObserver(self, forKeyPath: "preferredContentSize")
@@ -155,6 +155,7 @@ final class StatusBarController: NSObject {
     }
 
     private func closePanel() {
+        guard panel.isVisible else { return }
         let currentFrame = panel.frame
         let smallHeight = currentFrame.height * 0.55
         let smallWidth = currentFrame.width * 0.85
@@ -203,18 +204,15 @@ final class StatusBarController: NSObject {
     // MARK: - Bubbles
 
     private func observeBubbleChanges() {
-        withObservationTracking {
-            _ = appState.visibleBubbles
-        } onChange: { [weak self] in
-            Task { @MainActor [weak self] in
-                guard let self else { return }
-                syncBubbles()
-                observeBubbleChanges()
-            }
-        }
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(syncBubbles),
+            name: .appStateDidChange,
+            object: nil
+        )
     }
 
-    private func syncBubbles() {
+    @objc private func syncBubbles() {
         let visible = appState.visibleBubbles
         let visibleIDs = Set(visible.map { $0.id })
         let currentIDs = Set(bubblePanels.keys)
@@ -300,15 +298,14 @@ final class StatusBarController: NSObject {
     }
 
     private func removeBubblePanel(for id: UUID) {
-        guard let bp = bubblePanels[id] else { return }
+        guard let bp = bubblePanels.removeValue(forKey: id) else { return }
 
         NSAnimationContext.runAnimationGroup { context in
             context.duration = 0.15
             context.timingFunction = CAMediaTimingFunction(name: .easeIn)
             bp.panel.animator().alphaValue = 0
-        } completionHandler: { [weak self] in
+        } completionHandler: {
             bp.panel.orderOut(nil)
-            self?.bubblePanels.removeValue(forKey: id)
         }
     }
 
