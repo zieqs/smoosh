@@ -18,7 +18,7 @@ struct DropZoneView: View {
                     .fontWeight(.semibold)
                     .foregroundStyle(.primary)
 
-                Text("Supports Images, videos, and PDFs")
+                Text("Supports images, PDFs")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -65,16 +65,16 @@ struct DropZoneView: View {
         guard FileManager.default.fileExists(atPath: url.path, isDirectory: &isDirectory) else { return }
 
         if isDirectory.boolValue {
-            let supportedTypes: [UTType] = [.png, .jpeg, .gif]
+            let supportedTypes: [UTType] = [.png, .jpeg, .gif, .pdf]
             let enumerator = FileManager.default.enumerator(at: url, includingPropertiesForKeys: nil)
             while let child = enumerator?.nextObject() as? URL {
                 guard !child.hasDirectoryPath else { continue }
                 guard let type = UTType(filenameExtension: child.pathExtension),
                       supportedTypes.contains(type) else { continue }
-                ImageOptimizationService.shared.optimize(fileAt: child, appState: appState)
+                OptimizationCoordinator.shared.optimize(fileAt: child, appState: appState)
             }
         } else {
-            ImageOptimizationService.shared.optimize(fileAt: url, appState: appState)
+            OptimizationCoordinator.shared.optimize(fileAt: url, appState: appState)
         }
     }
 }
