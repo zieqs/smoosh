@@ -6,7 +6,7 @@ final class PDFOptimizationService {
 
     private init() {}
 
-    func optimize(fileAt url: URL, appState: AppState) {
+    func optimize(fileAt url: URL, appState: AppState, forceAggressive: Bool = false) {
         let item = OptimizationItem(
             id: UUID(), fileName: url.lastPathComponent,
             fileSize: (try? FileManager.default.attributesOfItem(atPath: url.path))?[.size] as? Int64 ?? 0,
@@ -25,7 +25,8 @@ final class PDFOptimizationService {
                 sourceURL: url, status: .processing(0)
             ))
 
-            if Preferences.shared.useAggressivePDFCompression {
+            let useAggressive = forceAggressive || Preferences.shared.useAggressivePDFCompression
+            if useAggressive {
                 await runAggressive(input: url, output: outputURL, item: item, appState: appState)
             } else {
                 await runStandard(input: url, output: outputURL, item: item, appState: appState)

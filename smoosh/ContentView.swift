@@ -7,14 +7,9 @@ struct ContentView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            if appState.history.isEmpty {
-                Spacer()
-                DropZoneView()
-                Spacer()
-            } else {
-                DropZoneView()
-                HistoryListView()
-            }
+            Spacer()
+            DropZoneView()
+            Spacer()
 
             Divider()
                 .padding(.horizontal)
@@ -22,7 +17,7 @@ struct ContentView: View {
             BottomButtonsView(showPreferences: $showPreferences)
         }
         .frame(width: 300)
-        .frame(minHeight: 280)
+        .frame(minHeight: 220)
         .background(.thinMaterial)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .shadow(color: .black.opacity(0.2), radius: 16, y: 6)

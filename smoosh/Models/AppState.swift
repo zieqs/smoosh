@@ -14,11 +14,21 @@ final class AppState {
         }
     }
 
+    func dismissItem(_ id: UUID) {
+        if let index = history.firstIndex(where: { $0.id == id }) {
+            history[index].isBubbleVisible = false
+        }
+    }
+
     func removeItems(at offsets: IndexSet) {
         history.remove(atOffsets: offsets)
     }
 
     func clearHistory() {
         history.removeAll()
+    }
+
+    var visibleBubbles: [OptimizationItem] {
+        history.filter { $0.isBubbleVisible }
     }
 }

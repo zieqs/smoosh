@@ -1,4 +1,5 @@
 import Foundation
+import UniformTypeIdentifiers
 
 struct OptimizationItem: Identifiable {
     let id: UUID
@@ -7,6 +8,7 @@ struct OptimizationItem: Identifiable {
     let optimizedSize: Int64?
     let sourceURL: URL?
     let status: Status
+    var isBubbleVisible: Bool = true
 
     enum Status {
         case pending
@@ -24,5 +26,15 @@ struct OptimizationItem: Identifiable {
     var formattedSavings: String? {
         guard let pct = savingsPercent else { return nil }
         return String(format: "%.0f%%", pct)
+    }
+
+    var isPDF: Bool {
+        guard let ext = sourceURL?.pathExtension else { return false }
+        return UTType(filenameExtension: ext)?.conforms(to: .pdf) ?? false
+    }
+
+    var isImage: Bool {
+        guard let ext = sourceURL?.pathExtension else { return false }
+        return UTType(filenameExtension: ext)?.conforms(to: .image) ?? false
     }
 }
