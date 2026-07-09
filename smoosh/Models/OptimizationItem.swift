@@ -8,7 +8,6 @@ struct OptimizationItem: Identifiable {
     let optimizedSize: Int64?
     let sourceURL: URL?
     let status: Status
-    var isBubbleVisible: Bool = true
 
     enum Status {
         case pending

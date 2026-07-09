@@ -3,7 +3,6 @@ import UniformTypeIdentifiers
 
 struct DropZoneView: View {
     @Environment(AppState.self) private var appState
-    @Environment(\.closePanel) private var closePanel
     @State private var isDragging = false
 
     var body: some View {
@@ -77,7 +76,5 @@ struct DropZoneView: View {
         } else {
             OptimizationCoordinator.shared.optimize(fileAt: url, appState: appState)
         }
-
-        closePanel?()
     }
 }

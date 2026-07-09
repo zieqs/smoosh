@@ -6,19 +6,12 @@ final class StatusBarController: NSObject {
     private var panel: NSPanel!
     private var hostingController: NSHostingController<AnyView>!
     private let appState = AppState()
-    private var bubblePanels: [UUID: BubblePanel] = [:]
 
     private var escMonitor: Any?
     private var outsideClickMonitor: Any?
 
     override init() {
         super.init()
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(syncBubbles),
-            name: .appStateBubbleUpdate,
-            object: nil
-        )
         setupStatusItem()
         setupPanel()
         setupEscMonitor()
@@ -26,7 +19,6 @@ final class StatusBarController: NSObject {
     }
 
     deinit {
-        NotificationCenter.default.removeObserver(self)
         if let m = escMonitor { NSEvent.removeMonitor(m) }
         if let m = outsideClickMonitor { NSEvent.removeMonitor(m) }
         hostingController.removeObserver(self, forKeyPath: "preferredContentSize")
@@ -56,9 +48,6 @@ final class StatusBarController: NSObject {
             ContentView()
                 .environment(appState)
                 .environment(Preferences.shared)
-                .environment(\.closePanel, { [weak self] in
-                    self?.closePanel()
-                })
         ))
         hostingController.sizingOptions = [.preferredContentSize]
 
@@ -107,7 +96,7 @@ final class StatusBarController: NSObject {
         }
     }
 
-    // MARK: - Main Panel
+    // MARK: - Panel
 
     @objc private func togglePanel() {
         if panel.isVisible {
@@ -187,8 +176,8 @@ final class StatusBarController: NSObject {
     // MARK: - Sizing
 
     private func clampPanelSize(_ size: NSSize) -> NSSize {
-        let minHeight: CGFloat = 220
-        let maxHeight: CGFloat = 400
+        let minHeight: CGFloat = 250
+        let maxHeight: CGFloat = 500
         return NSSize(width: 300, height: min(max(size.height, minHeight), maxHeight))
     }
 
@@ -205,140 +194,4 @@ final class StatusBarController: NSObject {
             panel.setFrame(frame, display: true, animate: true)
         }
     }
-
-    // MARK: - Bubbles
-
-    @objc private func syncBubbles() {
-        let visible = appState.visibleBubbles
-        let visibleIDs = Set(visible.map { $0.id })
-        let currentIDs = Set(bubblePanels.keys)
-
-        for id in currentIDs.subtracting(visibleIDs) {
-            removeBubblePanel(for: id)
-        }
-
-        for item in visible {
-            if bubblePanels[item.id] == nil {
-                showBubble(for: item)
-            } else if let existing = bubblePanels[item.id] {
-                updateBubble(existing, for: item)
-            }
-        }
-
-        positionBubblePanels()
-    }
-
-    private func showBubble(for item: OptimizationItem) {
-        let bubbleView = ResultBubbleView(
-            item: item,
-            onDismiss: { [weak self] in
-                self?.appState.dismissItem(item.id)
-            },
-            onAggressive: { [weak self] in
-                guard let self, let url = item.sourceURL else { return }
-                appState.dismissItem(item.id)
-                PDFOptimizationService.shared.optimize(fileAt: url, appState: appState, forceAggressive: true)
-            }
-        )
-
-        let hosting = NSHostingController(rootView: AnyView(bubbleView))
-        hosting.sizingOptions = [.preferredContentSize]
-
-        let panel = NSPanel(
-            contentRect: NSRect(x: 0, y: 0, width: 260, height: 100),
-            styleMask: [.borderless],
-            backing: .buffered,
-            defer: false
-        )
-
-        panel.contentViewController = hosting
-        panel.isOpaque = false
-        panel.backgroundColor = .clear
-        panel.isFloatingPanel = true
-        panel.level = .floating
-        panel.collectionBehavior = [.canJoinAllSpaces, .transient]
-        panel.hidesOnDeactivate = false
-        panel.isReleasedWhenClosed = false
-        panel.becomesKeyOnlyIfNeeded = true
-
-        let size = hosting.preferredContentSize
-        panel.setFrame(NSRect(origin: .zero, size: size), display: false)
-        panel.alphaValue = 0
-        panel.orderFront(nil)
-
-        let bp = BubblePanel(panel: panel, hosting: hosting)
-        bubblePanels[item.id] = bp
-
-        positionBubblePanels()
-
-        NSAnimationContext.runAnimationGroup { context in
-            context.duration = 0.3
-            context.timingFunction = CAMediaTimingFunction(name: .easeOut)
-            panel.animator().alphaValue = 1
-        }
-    }
-
-    private func updateBubble(_ bp: BubblePanel, for item: OptimizationItem) {
-        let bubbleView = ResultBubbleView(
-            item: item,
-            onDismiss: { [weak self] in
-                self?.appState.dismissItem(item.id)
-            },
-            onAggressive: { [weak self] in
-                guard let self, let url = item.sourceURL else { return }
-                appState.dismissItem(item.id)
-                PDFOptimizationService.shared.optimize(fileAt: url, appState: appState, forceAggressive: true)
-            }
-        )
-        bp.hosting.rootView = AnyView(bubbleView)
-    }
-
-    private func removeBubblePanel(for id: UUID) {
-        guard let bp = bubblePanels.removeValue(forKey: id) else { return }
-
-        NSAnimationContext.runAnimationGroup { context in
-            context.duration = 0.15
-            context.timingFunction = CAMediaTimingFunction(name: .easeIn)
-            bp.panel.animator().alphaValue = 0
-        } completionHandler: {
-            bp.panel.orderOut(nil)
-        }
-    }
-
-    private func positionBubblePanels() {
-        guard let button = statusItem.button, let screen = button.window?.screen else { return }
-        let iconFrame = button.window?.convertToScreen(button.frame) ?? .zero
-
-        let sorted = bubblePanels.sorted { $0.key.uuidString < $1.key.uuidString }
-        let spacing: CGFloat = 6
-        let margin: CGFloat = 4
-
-        let bottomY = iconFrame.minY - spacing - margin
-        let totalHeight = sorted.reduce(0) { $0 + $1.value.panel.frame.height }
-        let topY = bottomY - totalHeight - spacing * CGFloat(sorted.count - 1)
-
-        let screenRect = screen.frame
-        var y = topY
-
-        NSAnimationContext.beginGrouping()
-        NSAnimationContext.current.duration = 0.25
-        NSAnimationContext.current.timingFunction = CAMediaTimingFunction(name: .easeOut)
-
-        for element in sorted {
-            let bp = element.value
-            var frame = bp.panel.frame
-            let clampedX = max(screenRect.minX + margin, min(iconFrame.midX - frame.width / 2, screenRect.maxX - frame.width - margin))
-            frame.origin.x = clampedX
-            frame.origin.y = y - frame.height
-            bp.panel.animator().setFrame(frame, display: true)
-            y -= frame.height + spacing
-        }
-
-        NSAnimationContext.endGrouping()
-    }
-}
-
-private struct BubblePanel {
-    let panel: NSPanel
-    let hosting: NSHostingController<AnyView>
 }

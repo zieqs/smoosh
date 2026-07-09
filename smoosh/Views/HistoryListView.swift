@@ -27,7 +27,7 @@ struct HistoryListView: View {
                     ForEach(appState.history) { item in
                         HistoryRow(item: item, onRetry: { item in
                             if let url = item.sourceURL {
-                                ImageOptimizationService.shared.optimize(fileAt: url, appState: appState)
+                                OptimizationCoordinator.shared.optimize(fileAt: url, appState: appState)
                             }
                         })
                     }

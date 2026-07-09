@@ -2,14 +2,18 @@ import SwiftUI
 
 struct ContentView: View {
     @Environment(AppState.self) private var appState
-    @Environment(Preferences.self) private var preferences
     @State private var showPreferences = false
 
     var body: some View {
         VStack(spacing: 0) {
-            Spacer()
-            DropZoneView()
-            Spacer()
+            if appState.history.isEmpty {
+                Spacer()
+                DropZoneView()
+                Spacer()
+            } else {
+                DropZoneView()
+                HistoryListView()
+            }
 
             Divider()
                 .padding(.horizontal)
@@ -17,7 +21,7 @@ struct ContentView: View {
             BottomButtonsView(showPreferences: $showPreferences)
         }
         .frame(width: 300)
-        .frame(minHeight: 220)
+        .frame(minHeight: 280)
         .background(.thinMaterial)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .shadow(color: .black.opacity(0.2), radius: 16, y: 6)
