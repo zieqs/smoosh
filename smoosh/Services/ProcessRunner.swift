@@ -47,22 +47,28 @@ struct ProcessRunner {
             }
 
             process.terminationHandler = { proc in
+                let exitCode = proc.terminationStatus
                 stdoutPipe.fileHandleForReading.readabilityHandler = nil
                 stderrPipe.fileHandleForReading.readabilityHandler = nil
+                let outData = stdoutData
+                let errData = stderrData
                 let remaining = (try? stdoutPipe.fileHandleForReading.readToEnd()) ?? Data()
-                stdoutData.append(remaining)
                 let errRemaining = (try? stderrPipe.fileHandleForReading.readToEnd()) ?? Data()
-                stderrData.append(errRemaining)
-                continuation.resume(returning: ProcessResult(
-                    exitCode: proc.terminationStatus,
-                    stdoutData: stdoutData,
-                    stderrData: stderrData
-                ))
+                let result = ProcessResult(
+                    exitCode: exitCode,
+                    stdoutData: outData + remaining,
+                    stderrData: errData + errRemaining
+                )
+                DispatchQueue.main.async {
+                    continuation.resume(returning: result)
+                }
             }
             do {
                 try process.run()
             } catch {
-                continuation.resume(throwing: error)
+                DispatchQueue.main.async {
+                    continuation.resume(throwing: error)
+                }
             }
         }
     }
