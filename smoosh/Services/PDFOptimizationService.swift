@@ -36,11 +36,7 @@ final class PDFOptimizationService {
 
     private func runStandard(input url: URL, output outputURL: URL, item: OptimizationItem, appState: AppState) async {
         guard let qpdf = BinaryLocator.url(for: "qpdf") else {
-            appState.replaceItem(item.id, with: OptimizationItem(
-                id: item.id, fileName: url.lastPathComponent,
-                fileSize: item.fileSize, optimizedSize: nil,
-                sourceURL: url, status: .failed("qpdf not found")
-            ))
+            await runAggressive(input: url, output: outputURL, item: item, appState: appState)
             return
         }
 
@@ -71,31 +67,20 @@ final class PDFOptimizationService {
                     try? FileManager.default.removeItem(at: tempOutput)
                 }
 
+                try? FileManager.default.removeItem(at: tempDir)
+
                 appState.replaceItem(item.id, with: OptimizationItem(
                     id: item.id, fileName: url.lastPathComponent,
                     fileSize: item.fileSize,
                     optimizedSize: isSmaller ? optimizedSize : item.fileSize,
                     sourceURL: url, status: .completed
                 ))
-            } else {
-                try? FileManager.default.removeItem(at: tempOutput)
-                appState.replaceItem(item.id, with: OptimizationItem(
-                    id: item.id, fileName: url.lastPathComponent,
-                    fileSize: item.fileSize, optimizedSize: nil,
-                    sourceURL: url,
-                    status: .failed(result.exitCode > 128 ? "Out of memory" : "Optimization failed")
-                ))
+                return
             }
-        } catch {
-            try? FileManager.default.removeItem(at: tempOutput)
-            appState.replaceItem(item.id, with: OptimizationItem(
-                id: item.id, fileName: url.lastPathComponent,
-                fileSize: item.fileSize, optimizedSize: nil,
-                sourceURL: url, status: .failed(error.localizedDescription)
-            ))
-        }
+        } catch {}
 
         try? FileManager.default.removeItem(at: tempDir)
+        await runAggressive(input: url, output: outputURL, item: item, appState: appState)
     }
 
     private func runAggressive(input url: URL, output outputURL: URL, item: OptimizationItem, appState: AppState) async {
