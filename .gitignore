@@ -20,4 +20,5 @@ Package.resolved
 
 # Development
 .superpowers/
-docs/
+docs/AGENTS.md
+docs/CONTEXT.md
